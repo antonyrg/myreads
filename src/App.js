@@ -11,6 +11,7 @@ class BooksApp extends React.Component {
     myReads: {
       currentlyReading: [
         {
+          'id': 'bla',
           imageLinks: {
             thumbnail: 'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api'
           },
@@ -36,6 +37,10 @@ class BooksApp extends React.Component {
       )));
   }
 
+  moveBook = (fromShelf, toShelf, bookId) => {
+    console.log(fromShelf, toShelf, bookId);
+  }
+
   componentDidMount() {
     BooksAPI.getAll().then(books => console.log(books));
     this.populateMyReads();
@@ -47,6 +52,7 @@ class BooksApp extends React.Component {
         <Route exact path='/' render={() => (
           <Home
             myReads={this.state.myReads}
+            moveBook={this.moveBook}
           />
         )} />
         <Route exact path='/search' component={Search} />

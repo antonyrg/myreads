@@ -11,16 +11,19 @@ class Home extends Component {
         <div className='list-books-content'>
           <div>
             <BookShelf
-              shelf='Currently Reading'
+              shelfName='Currently Reading'
               books={this.props.myReads.currentlyReading}
+              moveBook={this.props.moveBook}
             />
             <BookShelf
-              shelf='Read'
+              shelfName='Read'
               books={this.props.myReads.read}
+              moveBook={this.props.moveBook}
             />
             <BookShelf
-              shelf='Want to Read'
+              shelfName='Want to Read'
               books={this.props.myReads.wantToRead}
+              moveBook={this.props.moveBook}
             />
           </div>
         </div>
