@@ -6,6 +6,7 @@ import Book from './Book'
 import * as BooksAPI from './BooksAPI'
 
 class Search extends Component {
+  // status will be used to notify users of data refreshes
   state = {
     status: 'ready',
     query: '',

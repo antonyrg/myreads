@@ -8,6 +8,7 @@ import Search from './Search'
 import Home from './Home'
 
 class BooksApp extends React.Component {
+  // status will be used to notify users of data refreshes
   state = {
     status: 'ready',
     currentlyReading: [],
