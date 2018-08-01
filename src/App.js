@@ -62,7 +62,14 @@ class BooksApp extends React.Component {
             moveBookTo={this.moveBookTo}
           />
         )} />
-        <Route exact path='/search' component={Search} />
+        <Route exact path='/search' render={() => (
+          <Search
+            currentlyReading={this.state.currentlyReading}
+            read={this.state.read}
+            wantToRead={this.state.wantToRead}
+            moveBookTo={this.moveBookTo}
+          />
+        )} />
       </div>
     )
   }
