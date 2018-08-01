@@ -10,41 +10,45 @@ import Home from './Home'
 class BooksApp extends React.Component {
   state = {
     status: 'ready',
-    currentlyReading: [
-      {
-        'id': 'bla',
-        imageLinks: {
-          thumbnail: 'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api'
-        },
-        title: 'bla',
-        authors: ['bla'],
-        shelf: 'currentlyReading'
-      },
-    ],
+    currentlyReading: [],
     read: [],
-    wantToRead: []
+    wantToRead: [],
+    shelfIdMap: {
+      currentlyReading: new Set([]),
+      read: new Set([]),
+      wantToRead: new Set([])
+    }
   }
 
   populateMyReads() {
     BooksAPI.getAll()
-      .then(books => this.setState(currentState => (
-          {
-            currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
-            read: books.filter(book => book.shelf === 'read'),
-            wantToRead: books.filter(book => book.shelf === 'wantToRead')
-          }
-      )));
+      .then(books => this.setState(currentState => {
+        let newState = _.merge({}, currentState);
+        newState.currentlyReading = books.filter(book => book.shelf === 'currentlyReading');
+        newState.read = books.filter(book => book.shelf === 'read');
+        newState.wantToRead = books.filter(book => book.shelf === 'wantToRead');
+        newState.shelfIdMap.currentlyReading = new Set(newState.currentlyReading.map(book => book.id));
+        newState.shelfIdMap.read = new Set(newState.read.map(book => book.id));
+        newState.shelfIdMap.wantToRead = new Set(newState.wantToRead.map(book => book.id));
+        return newState;
+      }));
   }
 
   moveBookTo = (toShelf, book) => {
-    this.setState(currentState => {
-      let newMyReadsData = {};
-      book.shelf !== 'none' &&
-        (newMyReadsData[`${book.shelf}`] = currentState[book.shelf].filter(_book => _book.id !== book.id));
-      toShelf !== 'none' &&
-        (newMyReadsData[`${toShelf}`] = [_.merge(book, {shelf: toShelf}), ...currentState[`${toShelf}`]]);
-      return newMyReadsData
-    });
+    BooksAPI.update(book, toShelf).then(response => (
+      this.setState(currentState => {
+        let newState = _.merge({}, currentState);
+        if (book.shelf !== 'none') {
+          newState[`${book.shelf}`] = newState[book.shelf].filter(_book => _book.id !== book.id);
+          newState.shelfIdMap[`${book.shelf}`] = new Set(newState[`${book.shelf}`].map(book => book.id));
+        }
+        if (toShelf !== 'none') {
+          newState[`${toShelf}`] = [_.merge(book, {shelf: toShelf}), ...newState[`${toShelf}`]];
+          newState.shelfIdMap[`${toShelf}`] = new Set(newState[`${toShelf}`].map(book => book.id));
+        }
+        return newState
+      })
+    ));
   }
 
   componentDidMount() {
@@ -64,10 +68,8 @@ class BooksApp extends React.Component {
         )} />
         <Route exact path='/search' render={() => (
           <Search
-            currentlyReading={this.state.currentlyReading}
-            read={this.state.read}
-            wantToRead={this.state.wantToRead}
             moveBookTo={this.moveBookTo}
+            shelfIdMap={this.state.shelfIdMap}
           />
         )} />
       </div>

@@ -12,7 +12,7 @@ const Book = props => {
             : <div className="book-cover" style={{ width: 128, height: 193 }}></div>
           }
           <div className="book-shelf-changer">
-            <select value={props.book.shelf} onChange={e => props.moveBookTo(e.target.value, props.book)}>
+            <select value={props.book.shelf || 'none'} onChange={e => props.moveBookTo(e.target.value, props.book)}>
               <option value="move" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>

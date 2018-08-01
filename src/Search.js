@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import _ from 'lodash'
 
 import Book from './Book'
 import * as BooksAPI from './BooksAPI'
@@ -13,8 +14,22 @@ class Search extends Component {
 
   search = (query) => {
     this.setState({query: query});
-    BooksAPI.search(query)
-      .then(books => this.setState({books: books}));
+    if (query === '')
+      return this.setState({books: []});
+    BooksAPI.search(query).then(booksResponse => {
+      if (booksResponse.error) {
+        return this.setState({books: []});
+      }
+      this.setState({books: booksResponse.map(book => {
+        if (this.props.shelfIdMap.currentlyReading.has(book.id))
+          return _.merge(book, {shelf: 'currentlyReading'});
+        if (this.props.shelfIdMap.wantToRead.has(book.id))
+          return _.merge(book, {shelf: 'wantToRead'});
+        if (this.props.shelfIdMap.wantToRead.has(book.id))
+          return _.merge(book, {shelf: 'wantToRead'});
+        return _.merge(book, {shelf: 'none'});
+      })})
+    });
   }
 
   render() {
