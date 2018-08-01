@@ -2,7 +2,6 @@ import React, { Component }from 'react';
 
 class Book extends Component {
   render(){
-    console.log(`Book: ${this.props.book.shelf}`)
     return (
       <li>
         <div className="book">
