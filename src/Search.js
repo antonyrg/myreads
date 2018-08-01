@@ -12,10 +12,15 @@ class Search extends Component {
     books: []
   }
 
-  search = (query) => {
+  handleSearchInput = (e) => {
+    const query = e.target.value;
     this.setState({query: query});
     if (query === '')
       return this.setState({books: []});
+    this.searchBooks(query);
+  }
+
+  searchBooks = _.debounce((query) => {
     BooksAPI.search(query).then(booksResponse => {
       if (booksResponse.error) {
         return this.setState({books: []});
@@ -30,7 +35,7 @@ class Search extends Component {
         return _.merge(book, {shelf: 'none'});
       })})
     });
-  }
+  }, 300);
 
   render() {
     return (
@@ -42,7 +47,7 @@ class Search extends Component {
               type="text"
               placeholder="Search by title or author"
               value={this.state.query}
-              onChange={e => this.search(e.target.value)}
+              onChange={this.handleSearchInput}
             />
           </div>
         </div>
