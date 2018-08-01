@@ -13,17 +13,17 @@ class Home extends Component {
             <BookShelf
               shelfName='Currently Reading'
               books={this.props.myReads.currentlyReading}
-              moveBook={this.props.moveBook}
+              moveBookTo={this.props.moveBookTo}
             />
             <BookShelf
               shelfName='Read'
               books={this.props.myReads.read}
-              moveBook={this.props.moveBook}
+              moveBookTo={this.props.moveBookTo}
             />
             <BookShelf
               shelfName='Want to Read'
               books={this.props.myReads.wantToRead}
-              moveBook={this.props.moveBook}
+              moveBookTo={this.props.moveBookTo}
             />
           </div>
         </div>
